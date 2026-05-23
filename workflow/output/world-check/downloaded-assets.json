@@ -1,0 +1,11 @@
+{
+  "thumbnail": "workflow/output/world-check/assets/thumbnail.jpg",
+  "pano": "workflow/output/world-check/assets/pano.jpg",
+  "colliderMesh": "workflow/output/world-check/assets/collider_mesh.glb",
+  "splats": {
+    "500k": "workflow/output/world-check/assets/splat-500k.spz",
+    "100k": "workflow/output/world-check/assets/splat-100k.spz",
+    "150k": "workflow/output/world-check/assets/splat-150k.spz",
+    "full_res": "workflow/output/world-check/assets/splat-full_res.spz"
+  }
+}

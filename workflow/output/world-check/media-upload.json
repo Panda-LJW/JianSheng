@@ -1,0 +1,22 @@
+{
+  "media_asset": {
+    "media_asset_id": "8fcc5d95-74c5-4a6a-8fdd-2639b9a26f57",
+    "file_name": "restored.jpg",
+    "metadata": {
+      "project": "jiansheng",
+      "source": "workflow-step3-world"
+    },
+    "extension": "jpg",
+    "kind": "image",
+    "created_at": "2026-05-23T11:59:23.312137Z",
+    "updated_at": null
+  },
+  "upload_info": {
+    "upload_url": "https://storage.googleapis.com/wlt-training-gsc-marble-assets-prod/api/media-assets/YAm21ONV4Fbm9MWOudArlzwlDCB3/8fcc5d95-74c5-4a6a-8fdd-2639b9a26f57/restored.jpg?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wlt-training-gsc-sa%40wlt-training-gsc.iam.gserviceaccount.com%2F20260523%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260523T115923Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host%3Bx-goog-content-length-range&X-Goog-Signature=737a94b1c1e98e457d2ce4a393aa3575083b488712a500bd6465fcdf198164750408c789e693bf77c91955256c57158a0cba6cdbb950384d79afd1d8e658d6e04cff3b7b0e773c8b90d20d5c01c55a03104ee79b221795304418b3d2b41d859d9a84725d0379479be4024d5f95b4da47096e0027aad828ca5298786db733a53599430fb9715f82d0fadde8faad2aa7e3a6f634cc60f239f1b48875151178785bad47f8218c45bc5ee4046f81b8bd9155dc57ab287f0d78befa85ba797bb762a52006b7aa7f0c73d100334f1eb69cc10322666e1bce58b163a1a430eb9a093ecc6131921413cd9b8c67b2a30b746c75aa8eced51016dfd3ff2c0bef8113d7e8bf",
+    "required_headers": {
+      "x-goog-content-length-range": "0,104857600"
+    },
+    "upload_method": "PUT",
+    "curl_example": "curl -X PUT -H \"x-goog-content-length-range: 0,104857600\" --data-binary @restored.jpg \"https://storage.googleapis.com/wlt-training-gsc-marble-assets-prod/api/media-assets/YAm21ONV4Fbm9MWOudArlzwlDCB3/8fcc5d95-74c5-4a6a-8fdd-2639b9a26f57/restored.jpg?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wlt-training-gsc-sa%40wlt-training-gsc.iam.gserviceaccount.com%2F20260523%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260523T115923Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host%3Bx-goog-content-length-range&X-Goog-Signature=737a94b1c1e98e457d2ce4a393aa3575083b488712a500bd6465fcdf198164750408c789e693bf77c91955256c57158a0cba6cdbb950384d79afd1d8e658d6e04cff3b7b0e773c8b90d20d5c01c55a03104ee79b221795304418b3d2b41d859d9a84725d0379479be4024d5f95b4da47096e0027aad828ca5298786db733a53599430fb9715f82d0fadde8faad2aa7e3a6f634cc60f239f1b48875151178785bad47f8218c45bc5ee4046f81b8bd9155dc57ab287f0d78befa85ba797bb762a52006b7aa7f0c73d100334f1eb69cc10322666e1bce58b163a1a430eb9a093ecc6131921413cd9b8c67b2a30b746c75aa8eced51016dfd3ff2c0bef8113d7e8bf\""
+  }
+}

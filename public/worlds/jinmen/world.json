@@ -1,0 +1,38 @@
+{
+  "world_id": "65ffde31-7008-49be-970f-5dbcce5cff55",
+  "display_name": "",
+  "tags": null,
+  "assets": {
+    "mesh": {
+      "collider_mesh_url": "https://cdn.marble.worldlabs.ai/65ffde31-7008-49be-970f-5dbcce5cff55/c2a7d91a.glb"
+    },
+    "imagery": {
+      "pano_url": "https://cdn.marble.worldlabs.ai/65ffde31-7008-49be-970f-5dbcce5cff55/de29d403-7e56-43d0-8f7b-1c396fa932f4_panos/rgb_0.png"
+    },
+    "splats": {
+      "spz_urls": {
+        "500k": "https://cdn.marble.worldlabs.ai/65ffde31-7008-49be-970f-5dbcce5cff55/5cc8690e-1c24-4321-b014-2ebd94d43e46_ceramic_500k.spz",
+        "100k": "https://cdn.marble.worldlabs.ai/65ffde31-7008-49be-970f-5dbcce5cff55/54d063ad-384a-4d4a-a569-ba3d289930e0_dust_100k.spz",
+        "150k": "https://cdn.marble.worldlabs.ai/65ffde31-7008-49be-970f-5dbcce5cff55/006274bc-ab38-4829-b8b5-addf3c1340c5_ceramic_150k.spz",
+        "full_res": "https://cdn.marble.worldlabs.ai/65ffde31-7008-49be-970f-5dbcce5cff55/57c9f40c-979b-4fe7-b8c2-14258643a6cb_ceramic.spz"
+      },
+      "semantics_metadata": {
+        "metric_scale_factor": 2.9446301,
+        "ground_plane_offset": 1.7988789
+      }
+    },
+    "thumbnail_url": "https://cdn.marble.worldlabs.ai/65ffde31-7008-49be-970f-5dbcce5cff55/02190a16-178a-4fde-89f7-5344504fa82f_sand_mpi/thumbnail.webp",
+    "caption": "The scene is a cinematic and meticulously rendered historical depiction of an early 20th-century street in Tianjin, China, evoking a sense of bustling commercial life during a transitional era. The overall tone is one of authentic historical reconstruction, capturing the nuanced atmosphere of a vibrant port city at the cusp of modernity. A grand, traditional Chinese archway, or \"pailou,\" stands centrally, its weathered wooden structure and teal-green glazed tiles showing years of exposure to wind, rain, and soot, indicating a natural aging rather than pristine restoration. The archway's golden lacquer and blue-green painted motifs are faded, lending an aged patina, and the roof ridges are adorned with mythical beasts and curling grass patterns. Beneath the archway, the thoroughfare is a narrow, bustling path paved with flagstones and packed earth, deeply worn with cart ruts, scattered mud, coal dust, and countless footsteps. To the immediate left and right of the pailou, the street extends into a vibrant commercial district, flanked by two- or three-story brick-and-wood buildings, typical of Tianjin's mercantile architecture from the late 1900s to the 1910s. The ground floors of these buildings host various shops, characterized by their wooden lattice windows, gray brick walls, overhanging eaves, and distinctive scrolled rooflines, with an abundance of wooden signboards, fabric banners, and handwritten shop signs proclaiming their trades. The architectural palette is dominated by muted shades of gray-brown, brick-red, aged wood, and blue-green roof tiles. This bustling commercial street is an authentic representation of a bygone era in Tianjin, reflecting the city's unique blend of traditional Chinese urban life and burgeoning international commerce. The 360 scene is faultless."
+  },
+  "created_at": null,
+  "updated_at": null,
+  "permission": {
+    "public": false,
+    "allowed_readers": [],
+    "allowed_writers": [],
+    "allow_id_access": false
+  },
+  "world_prompt": null,
+  "world_marble_url": "https://marble.worldlabs.ai/world/65ffde31-7008-49be-970f-5dbcce5cff55",
+  "model": null
+}
