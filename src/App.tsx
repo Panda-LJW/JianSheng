@@ -6,13 +6,17 @@ import { LocationDetail } from './pages/LocationDetail'
 import { UploadPage } from './pages/UploadPage'
 
 type Page =
+  | { kind: 'home'; focusArchive?: boolean }
   | { kind: 'upload' }
-  | { kind: 'analyzing'; userPhoto?: string }
-  | { kind: 'home' }
+  | { kind: 'analyzing'; userPhoto?: string; resultId: string }
   | { kind: 'detail'; locationId: string }
 
 function App() {
-  const [page, setPage] = useState<Page>({ kind: 'upload' })
+  const [page, setPage] = useState<Page>(() => {
+    const hash = window.location.hash.replace('#', '')
+    const location = getLocation(hash)
+    return location ? { kind: 'detail', locationId: location.id } : { kind: 'home' }
+  })
 
   const syncActiveFromHash = useCallback(() => {
     const hash = window.location.hash.replace('#', '')
@@ -33,29 +37,47 @@ function App() {
 
   useEffect(() => {
     window.history.replaceState(null, '', page.kind === 'detail' ? `#${page.locationId}` : window.location.pathname)
-    window.scrollTo({ top: 0, behavior: 'auto' })
+    if (page.kind !== 'home' || !page.focusArchive) {
+      window.scrollTo({ top: 0, behavior: 'auto' })
+    }
   }, [page])
 
   if (page.kind === 'upload') {
     return (
       <UploadPage
-        onPhotoSelected={(userPhoto) => setPage({ kind: 'analyzing', userPhoto })}
-        onUseExample={() => setPage({ kind: 'analyzing' })}
+        onBack={() => setPage({ kind: 'home' })}
+        onBrowseLocations={() => setPage({ kind: 'home', focusArchive: true })}
+        onPhotoSelected={(userPhoto) => setPage({ kind: 'analyzing', userPhoto, resultId: 'jiefang' })}
+        onUseExample={() => setPage({ kind: 'analyzing', resultId: 'jiefang' })}
       />
     )
   }
 
   if (page.kind === 'analyzing') {
-    return <AnalyzingPage userPhoto={page.userPhoto} onComplete={() => setPage({ kind: 'home' })} />
+    const resultLocation = getLocation(page.resultId)
+    return (
+      <AnalyzingPage
+        resultLocation={resultLocation}
+        userPhoto={page.userPhoto}
+        onBack={() => setPage({ kind: 'upload' })}
+        onComplete={() => setPage({ kind: 'detail', locationId: page.resultId })}
+      />
+    )
   }
 
   const activeLocation = page.kind === 'detail' ? getLocation(page.locationId) : undefined
 
   if (activeLocation) {
-    return <LocationDetail location={activeLocation} onBack={() => setPage({ kind: 'upload' })} />
+    return <LocationDetail location={activeLocation} onBack={() => setPage({ kind: 'home', focusArchive: true })} />
   }
 
-  return <HomePage onSelect={(id) => setPage({ kind: 'detail', locationId: id })} />
+  return (
+    <HomePage
+      focusArchive={page.kind === 'home' ? page.focusArchive : false}
+      onSelect={(id) => setPage({ kind: 'detail', locationId: id })}
+      onUpload={() => setPage({ kind: 'upload' })}
+    />
+  )
 }
 
 export default App

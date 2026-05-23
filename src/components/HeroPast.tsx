@@ -1,6 +1,7 @@
 import type { LocationData } from '../data/locations'
 import type { BgmState } from '../hooks/useBgmPlayer'
 import { AudioPlayer } from './AudioPlayer'
+import { ImageExplorer } from './ImageExplorer'
 
 interface Props {
   location: LocationData
@@ -21,6 +22,7 @@ export function HeroPast({ location, bgm, progress }: Props) {
         <span className="era-pill">{location.era}</span>
         <h2>{location.name}</h2>
         <p>{location.subtitle}</p>
+        <ImageExplorer location={location} />
       </div>
       <AudioPlayer bgm={bgm} progress={progress} />
     </section>

@@ -1,18 +1,21 @@
-import { Check, Circle, Loader2 } from 'lucide-react'
+import { ArrowLeft, Check, Circle, FileJson, Loader2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
+import type { LocationData } from '../data/locations'
 
 interface AnalyzingPageProps {
+  resultLocation?: LocationData
   userPhoto?: string
+  onBack: () => void
   onComplete: () => void
 }
 
 const steps = [
-  { text: '读取照片信息', duration: 800 },
-  { text: '识别拍摄地点', duration: 1200 },
-  { text: '检索历史档案', duration: 1500 },
-  { text: '选择穿越年代', duration: 1000 },
-  { text: '生成历史复原图', duration: 1500 },
-  { text: '生成时代音乐', duration: 1000 },
+  { text: '读取本地照片预览', detail: '不上传到实时服务器', duration: 700 },
+  { text: '匹配静态示例地标', detail: '默认命中解放桥 demo', duration: 1000 },
+  { text: '载入 workflow analysis', detail: '读取离线 JSON 契约字段', duration: 1200 },
+  { text: '确认历史复原图', detail: '使用已生成 restored image', duration: 1100 },
+  { text: '准备音频与章节', detail: '绑定本地 BGM 与 narration', duration: 900 },
+  { text: '进入可评审体验', detail: '前端 ready，不假装实时生成', duration: 900 },
 ]
 
 const totalDuration = steps.reduce((sum, step) => sum + step.duration, 0)
@@ -32,7 +35,7 @@ function typedText(text: string, elapsedInStep: number, duration: number) {
   return text.slice(0, visibleCount)
 }
 
-export function AnalyzingPage({ userPhoto, onComplete }: AnalyzingPageProps) {
+export function AnalyzingPage({ resultLocation, userPhoto, onBack, onComplete }: AnalyzingPageProps) {
   const [elapsed, setElapsed] = useState(0)
   const [finished, setFinished] = useState(false)
 
@@ -61,167 +64,26 @@ export function AnalyzingPage({ userPhoto, onComplete }: AnalyzingPageProps) {
   const activeStepElapsed = Math.max(0, elapsed - elapsedBeforeActive)
   const progress = Math.min(1, elapsed / totalDuration)
   const currentText = useMemo(() => {
-    if (finished) return '穿越准备完毕'
+    if (finished) return '示例结果已准备完毕'
     const current = steps[activeStep] ?? steps[steps.length - 1]
     return typedText(`正在${current.text}...`, activeStepElapsed, current.duration)
   }, [activeStep, activeStepElapsed, finished])
 
   return (
     <main className="app-frame analyzing-page">
-      <style>{`
-        .analyzing-page {
-          min-height: 100dvh;
-          background:
-            radial-gradient(circle at 50% 12%, rgba(198, 155, 73, 0.1), transparent 18rem),
-            linear-gradient(180deg, var(--bg-primary), var(--bg-deep) 68%);
-        }
-
-        .analyzing-page__shell {
-          display: grid;
-          min-height: 100dvh;
-          align-content: center;
-          gap: 30px;
-          padding: 28px 18px;
-        }
-
-        .analysis-photo {
-          position: relative;
-          width: min(100%, 220px);
-          aspect-ratio: 4 / 3;
-          justify-self: center;
-          overflow: hidden;
-          border: 1px solid var(--border-medium);
-          border-radius: 8px;
-          background: var(--bg-secondary);
-          box-shadow: 0 0 34px rgba(198, 155, 73, 0.13);
-        }
-
-        .analysis-photo img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          filter: saturate(0.88) sepia(0.12) brightness(0.86);
-        }
-
-        .analysis-photo__scan {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(180deg, transparent 0%, rgba(198, 155, 73, 0.24) 50%, transparent 100%);
-          transform: translateY(-100%);
-          animation: analysis-scan 2.2s ease-in-out infinite;
-        }
-
-        .analysis-progress {
-          display: grid;
-          gap: 16px;
-          text-align: center;
-        }
-
-        .analysis-progress__rail {
-          position: relative;
-          height: 2px;
-          overflow: hidden;
-          border-radius: 999px;
-          background: var(--bg-elevated);
-        }
-
-        .analysis-progress__bar {
-          position: absolute;
-          inset: 0;
-          transform-origin: left;
-          background: var(--accent-gold);
-          box-shadow: 0 0 16px var(--glow-gold);
-          transition: transform 120ms linear;
-        }
-
-        .analysis-progress p {
-          min-height: 32px;
-          margin: 0;
-          color: var(--text-secondary);
-          font-size: 1rem;
-          line-height: 2;
-        }
-
-        .analysis-steps {
-          display: grid;
-          gap: 12px;
-          margin: 0;
-          padding: 0;
-          list-style: none;
-        }
-
-        .analysis-steps li {
-          display: flex;
-          min-height: 32px;
-          align-items: center;
-          gap: 11px;
-          color: var(--text-dim);
-          font-size: 0.92rem;
-          transition: color 240ms ease, opacity 240ms ease;
-        }
-
-        .analysis-step-icon {
-          display: grid;
-          width: 22px;
-          height: 22px;
-          place-items: center;
-          color: currentColor;
-        }
-
-        .analysis-step-icon svg {
-          width: 17px;
-          height: 17px;
-        }
-
-        .analysis-steps li.is-active,
-        .analysis-steps li.is-done {
-          color: var(--accent-gold);
-        }
-
-        .analysis-steps li.is-active .analysis-step-icon {
-          animation: analysis-pulse 1s ease-in-out infinite;
-        }
-
-        .analysis-steps li.is-active .analysis-step-icon svg {
-          animation: analysis-spin 1.3s linear infinite;
-        }
-
-        @keyframes analysis-scan {
-          0% {
-            transform: translateY(-100%);
-            opacity: 0;
-          }
-          20%,
-          80% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(100%);
-            opacity: 0;
-          }
-        }
-
-        @keyframes analysis-pulse {
-          0%,
-          100% {
-            transform: scale(1);
-            opacity: 0.74;
-          }
-          50% {
-            transform: scale(1.2);
-            opacity: 1;
-          }
-        }
-
-        @keyframes analysis-spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
+      <button type="button" className="back-button upload-back" onClick={onBack} aria-label="返回上传页">
+        <ArrowLeft aria-hidden="true" />
+        <span>返回上传</span>
+      </button>
       <section className="analyzing-page__shell">
+        <div className="analysis-heading">
+          <p className="section-kicker">offline workflow demo</p>
+          <h1>载入已生成结果</h1>
+          <p>这里展示的是离线 AI workflow 的前端契约演示，不会把照片发送到实时后端。</p>
+        </div>
+
         <div className="analysis-photo">
-          <img src={userPhoto || '/images/jiefang_present.jpg'} alt={userPhoto ? '用户上传照片' : '天津示例照片'} />
+          <img src={userPhoto || resultLocation?.presentImage || '/images/jiefang_present.jpg'} alt={userPhoto ? '用户上传照片预览' : '天津示例照片'} />
           <span className="analysis-photo__scan" />
         </div>
 
@@ -241,11 +103,22 @@ export function AnalyzingPage({ userPhoto, onComplete }: AnalyzingPageProps) {
                 <span className="analysis-step-icon" aria-hidden="true">
                   {done ? <Check /> : active ? <Loader2 /> : <Circle />}
                 </span>
-                <span>{step.text}</span>
+                <span>
+                  <strong>{step.text}</strong>
+                  <small>{step.detail}</small>
+                </span>
               </li>
             )
           })}
         </ol>
+
+        <aside className="pipeline-card" aria-label="workflow契约状态">
+          <FileJson aria-hidden="true" />
+          <div>
+            <strong>{resultLocation?.name ?? '解放桥'} · 契约就绪</strong>
+            <span>{resultLocation?.pipeline?.analysisPath ?? 'workflow/output/demo-analyses.json'}</span>
+          </div>
+        </aside>
       </section>
     </main>
   )
