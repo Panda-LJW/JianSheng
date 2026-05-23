@@ -1,26 +1,79 @@
-import { locations } from '../data/locations'
+import { ArrowDown } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { LocationCard } from '../components/LocationCard'
+import { locations } from '../data/locations'
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface Props {
   onSelect: (id: string) => void
 }
 
 export function HomePage({ onSelect }: Props) {
+  const archiveRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    const archive = archiveRef.current
+    if (!archive) return undefined
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.reveal-card',
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          ease: 'power2.out',
+          stagger: 0.15,
+          scrollTrigger: {
+            trigger: archive,
+            start: 'top 70%',
+            once: true,
+          },
+        },
+      )
+    }, archive)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <main className="min-h-screen max-w-[100vw] overflow-x-hidden bg-[#0D0B09] text-[#E8DFD0]">
-      <section className="mx-auto grid min-h-screen w-full max-w-[100vw] content-center gap-10 px-5 py-16 sm:max-w-6xl sm:px-8">
-        <div className="max-w-3xl min-w-0">
-          <p className="text-xs uppercase tracking-[0.36em] text-[#C69B49]">Hack the Future Tianjin</p>
-          <h1 className="mt-5 font-serif text-5xl leading-none text-[#E8DFD0] sm:text-8xl">见声</h1>
-          <p className="mt-5 max-w-[21rem] break-words text-base leading-8 text-[#A89A87] sm:max-w-2xl sm:text-lg">
-            看见过去的样子，听见过去的声音。选择一个天津地标，向下滚动，让现状照片、历史复原图和音乐一起完成一次时光穿越。
-          </p>
+    <main className="app-frame home-page">
+      <section className="home-hero">
+        <nav className="home-nav" aria-label="主导航">
+          <span>见声</span>
+          <span>海河声音档案室</span>
+        </nav>
+        <div className="home-hero__center">
+          <p className="section-kicker">time · travel · experience</p>
+          <h1>见 声</h1>
+          <p>看见过去的样子，听见过去的声音</p>
+          <span className="gold-rule" />
         </div>
-        <div className="grid min-w-0 gap-4 md:grid-cols-3">
+        <button
+          type="button"
+          className="home-scroll-cue"
+          onClick={() => document.getElementById('archive-index')?.scrollIntoView({ behavior: 'smooth' })}
+        >
+          <ArrowDown aria-hidden="true" />
+          <span>进入档案室</span>
+        </button>
+      </section>
+
+      <section ref={archiveRef} id="archive-index" className="archive-index">
+        <div className="archive-index__heading">
+          <p>天 津 · 时 光 档 案</p>
+          <span />
+        </div>
+        <div className="archive-card-list">
           {locations.map((location) => (
             <LocationCard key={location.id} location={location} onSelect={onSelect} />
           ))}
         </div>
+        <footer className="home-footer">Hack the Future · 天津站</footer>
       </section>
     </main>
   )

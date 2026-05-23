@@ -1,3 +1,4 @@
+import { Play } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 interface Props {
@@ -25,9 +26,14 @@ export function MarbleVideo({ src }: Props) {
   if (!src || !exists) return null
 
   return (
-    <section className="bg-[#0D0B09] px-5 py-16 sm:px-8">
-      <div className="mx-auto max-w-5xl">
-        <video className="w-full rounded-lg border border-[#3A2F22]" src={src} controls playsInline />
+    <section className="marble-video-section">
+      <div className="section-kicker">walk into the scene</div>
+      <h2>走进历史现场</h2>
+      <div className="marble-video-shell">
+        <video src={src} controls playsInline preload="metadata" />
+        <div className="marble-video-mark" aria-hidden="true">
+          <Play />
+        </div>
       </div>
     </section>
   )

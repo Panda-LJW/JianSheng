@@ -1,55 +1,67 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import type { LocationData } from '../data/locations'
 
-function RevealParagraph({ text, index }: { text: string; index: number }) {
-  const ref = useRef<HTMLParagraphElement | null>(null)
-  const [visible, setVisible] = useState(false)
+gsap.registerPlugin(ScrollTrigger)
+
+export function StoryReveal({ location }: { location: LocationData }) {
+  const sectionRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
-    const element = ref.current
-    if (!element) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.35 },
-    )
-    observer.observe(element)
-    return () => observer.disconnect()
+    const section = sectionRef.current
+    if (!section) return undefined
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.story-reveal',
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power2.out',
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 68%',
+            once: true,
+          },
+        },
+      )
+    }, section)
+
+    return () => ctx.revert()
   }, [])
 
   return (
-    <p
-      ref={ref}
-      className={`max-w-2xl text-balance font-serif text-2xl leading-relaxed text-[#E8DFD0] transition duration-700 sm:text-3xl ${
-        visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
-      }`}
-      style={{ transitionDelay: `${index * 80}ms` }}
-    >
-      {text}
-    </p>
-  )
-}
-
-export function StoryReveal({ location }: { location: LocationData }) {
-  return (
-    <section className="relative bg-[#0D0B09] px-5 py-24 sm:px-8">
-      <div className="mx-auto grid max-w-5xl gap-12">
-        <div className="max-w-xl">
-          <p className="text-xs uppercase tracking-[0.32em] text-[#C69B49]">archive voice</p>
-          <h2 className="mt-3 font-serif text-4xl text-[#E8DFD0]">听见这段时间</h2>
+    <section ref={sectionRef} className="story-section">
+      <div className="story-shell">
+        <div className="story-heading story-reveal">
+          <p className="section-kicker">archive voice</p>
+          <h2>听见这段时间</h2>
         </div>
-        <div className="grid gap-16">
+        <div className="story-copy">
           {location.story.paragraphs.map((paragraph, index) => (
-            <RevealParagraph key={paragraph} text={paragraph} index={index} />
+            <p key={paragraph} className={index === 0 ? 'story-paragraph story-paragraph--lead story-reveal' : 'story-paragraph story-reveal'}>
+              {paragraph}
+            </p>
           ))}
         </div>
-        <blockquote className="mt-8 border-l border-[#C69B49] pl-5 font-serif text-3xl leading-tight text-[#C69B49] sm:text-5xl">
-          {location.story.highlightQuote}
-        </blockquote>
+        {location.story.highlightQuote ? (
+          <blockquote className="story-quote story-reveal">{location.story.highlightQuote}</blockquote>
+        ) : null}
+        <div className="soundscape story-reveal">
+          <div>
+            <p className="section-kicker">你 听 见 的</p>
+            <h3>声音环境</h3>
+          </div>
+          <ul>
+            {location.story.soundscape.map((sound) => (
+              <li key={sound}>{sound}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   )

@@ -1,33 +1,45 @@
-import { useEffect, useState } from 'react'
 import type { RefObject } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-function clamp(value: number) {
-  return Math.min(1, Math.max(0, value))
-}
+gsap.registerPlugin(ScrollTrigger)
 
 export function useScrollProgress(ref: RefObject<HTMLElement | null>) {
   const [progress, setProgress] = useState(0)
+  const frameRef = useRef<number | null>(null)
+  const latestRef = useRef(0)
 
   useEffect(() => {
-    const update = () => {
-      const element = ref.current
-      if (!element) return
-      const rect = element.getBoundingClientRect()
-      const viewport = window.innerHeight || 1
-      const travel = rect.height - viewport
-      if (travel <= 0) {
-        setProgress(rect.top < 0 ? 1 : 0)
-        return
-      }
-      setProgress(clamp(-rect.top / travel))
-    }
+    const element = ref.current
+    if (!element) return undefined
 
-    update()
-    window.addEventListener('scroll', update, { passive: true })
-    window.addEventListener('resize', update)
+    const ctx = gsap.context(() => {
+      const trigger = ScrollTrigger.create({
+        trigger: element,
+        start: 'top top',
+        end: 'bottom bottom',
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          latestRef.current = self.progress
+          if (frameRef.current !== null) return
+          frameRef.current = window.requestAnimationFrame(() => {
+            frameRef.current = null
+            setProgress(latestRef.current)
+          })
+        },
+      })
+
+      setProgress(trigger.progress)
+    }, element)
+
+    ScrollTrigger.refresh()
     return () => {
-      window.removeEventListener('scroll', update)
-      window.removeEventListener('resize', update)
+      if (frameRef.current !== null) {
+        window.cancelAnimationFrame(frameRef.current)
+        frameRef.current = null
+      }
+      ctx.revert()
     }
   }, [ref])
 
