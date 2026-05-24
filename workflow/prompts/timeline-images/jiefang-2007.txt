@@ -1,0 +1,8 @@
+Use case: historical-scene
+Asset type: JianSheng timeline image, 1536x1024 photoreal reconstruction
+Primary request: Reconstruct Tianjin Jiefang Bridge around 2007 after major restoration, when the opening function is restored and the bridge becomes a modern Haihe landmark.
+Scene/backdrop: restored steel truss bridge on the Haihe, modern but not current-day glossy, early 2000s Tianjin riverfront, rebuilt opening mechanism and scenic lighting.
+Subject: repaired Jiefang Bridge, clean steel structure, bridge lights, river cruise atmosphere, pedestrians, early-2000s city background with station/riverfront context, no excessive current skyline.
+Historical anchors: 2005-2007 major repair, restored opening function, bridge becomes urban image and festival-opening landmark.
+Style: photoreal documentary, early-2000s urban China, balanced twilight lighting, modern restoration visible but historically grounded.
+Composition: wide horizontal bridge scene, steel structure and river reflections, show continuity from old industrial bridge to contemporary city landmark.

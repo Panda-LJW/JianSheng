@@ -1,0 +1,8 @@
+Use case: historical-scene
+Asset type: JianSheng timeline image, 1536x1024 photoreal historical reconstruction
+Primary request: Reconstruct Tianjin Jiefang Bridge / Wanguo Bridge around January 1949, at the historical turning point when Wanguo Bridge is renamed Jiefang Bridge after Tianjin liberation.
+Scene/backdrop: Haihe steel truss bridge, winter air, bridgehead with restrained wartime traces, people moving carefully, Tianjin station and concession-era buildings in distance.
+Subject: dark steel truss bridge, rivets, tram tracks, bridge lamps, a few soldiers and civilians, smoke/dust kept subtle, river and station-side urban backdrop.
+Historical anchors: 1949 Tianjin liberation, January 25 renaming from Wanguo Bridge to Jiefang Bridge, bridge as civic memory node.
+Style: cinematic documentary realism, sober historical tone, no overdramatic battle scene, no explosions, no propaganda poster style, accurate late-1940s clothing and vehicles.
+Composition: wide horizontal bridge view, steel structure dominant, human figures small but meaningful, river visible.

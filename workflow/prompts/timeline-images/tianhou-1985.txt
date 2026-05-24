@@ -1,0 +1,8 @@
+Use case: historical-scene
+Asset type: JianSheng timeline image, 1536x1024 photoreal historical reconstruction
+Primary request: Reconstruct Tianjin Tianhou Palace around 1985 after large-scale reconstruction and the establishment of Tianjin Folk Museum.
+Scene/backdrop: freshly restored temple gate in Ancient Culture Street, museum/public cultural space beginning to form, 1980s visitors, preservation signage, clean paved plaza.
+Subject: restored Tianhou Palace gate, gray brick and red doors, traditional signboard, people in 1980s clothing, bicycles at edge, small groups reading signage, folk museum atmosphere.
+Historical anchors: 1985 reconstruction, Tianjin Folk Museum, transition from religious/folk space to public heritage display.
+Style: documentary realism, 1980s Tianjin, restrained restoration colors, no modern phones, no LED signage, no contemporary tourists.
+Composition: wide horizontal frontal view, gate as anchor, show restored condition and modern public use.

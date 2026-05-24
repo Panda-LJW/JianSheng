@@ -4,7 +4,7 @@ import { useRef } from 'react'
 interface UploadPageProps {
   onBack: () => void
   onBrowseLocations: () => void
-  onPhotoSelected: (photoUrl: string) => void
+  onPhotoSelected: (photoUrl: string, filename?: string) => void
   onUseExample: () => void
 }
 
@@ -15,7 +15,7 @@ export function UploadPage({ onBack, onBrowseLocations, onPhotoSelected, onUseEx
     const file = event.target.files?.[0]
     if (!file) return
     const url = URL.createObjectURL(file)
-    onPhotoSelected(url)
+    onPhotoSelected(url, file.name)
     event.target.value = ''
   }
 
@@ -29,7 +29,7 @@ export function UploadPage({ onBack, onBrowseLocations, onPhotoSelected, onUseEx
         <div className="upload-page__brand">
           <p className="section-kicker">offline ai workflow</p>
           <h1>上传照片</h1>
-          <p>选择一张天津地标照片，体验离线 AI workflow 已生成的示例结果。</p>
+          <p>选择一张天津地标照片，创建一次 AI 文旅体验任务。</p>
           <span className="gold-rule" />
         </div>
 
@@ -45,7 +45,7 @@ export function UploadPage({ onBack, onBrowseLocations, onPhotoSelected, onUseEx
           <button type="button" className="upload-dropzone" onClick={() => inputRef.current?.click()}>
             <Camera aria-hidden="true" />
             <strong>拍摄 / 上传照片</strong>
-            <span>当前演示不会把照片上传到实时服务器，会进入契约演示流程。</span>
+            <span>进入任务状态流程，后续可衔接图像识别、历史资料检索、复原图和 TTS。</span>
           </button>
 
           <div className="upload-divider">
@@ -62,10 +62,10 @@ export function UploadPage({ onBack, onBrowseLocations, onPhotoSelected, onUseEx
             <Map aria-hidden="true" />
             <span>直接浏览地标</span>
           </button>
-          <p className="upload-page__hint">示例结果来自本地静态素材与 workflow 产物契约，不是实时 API 调用。</p>
+          <p className="upload-page__hint">当前会优先连接本地 API；若服务未启动，页面会自动降级到本地体验流程。</p>
         </div>
 
-        <p className="upload-page__footer">后续接入任务队列/API 后，这里会承接真实上传、分析、复原图与 TTS 生成状态。</p>
+        <p className="upload-page__footer">任务模型已预留：地点识别、资料检索、复原图、TTS 与 Marble world 可分步接入。</p>
       </section>
     </main>
   )

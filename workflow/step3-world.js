@@ -1,9 +1,27 @@
+import { existsSync, readFileSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+loadEnvFile()
+
 const WORLD_API_BASE = process.env.WORLDLABS_API_BASE || 'https://api.worldlabs.ai/marble/v1'
 const isDirectRun = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+
+function loadEnvFile(file = '.env') {
+  if (!existsSync(file)) return
+  const lines = readFileSync(file, 'utf8').split(/\r?\n/)
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const equalsAt = trimmed.indexOf('=')
+    if (equalsAt < 0) continue
+    const key = trimmed.slice(0, equalsAt).trim()
+    const rawValue = trimmed.slice(equalsAt + 1).trim()
+    if (!key || process.env[key] !== undefined) continue
+    process.env[key] = rawValue.replace(/^['"]|['"]$/g, '')
+  }
+}
 
 function getWorldLabsApiKey() {
   return process.env.WORLDLABS_API_KEY || process.env.WLT_API_KEY || process.env.WLT_API_KEY_VALUE

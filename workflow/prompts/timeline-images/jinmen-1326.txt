@@ -1,0 +1,8 @@
+Use case: historical-scene
+Asset type: JianSheng timeline image, 1536x1024 photoreal historical reconstruction
+Primary request: Reconstruct the area that will later become Tianjin Ancient Culture Street / Gongnan Street around 1326, at the Sanchakou river-mouth near the newly decreed Tianfei Palace.
+Scene/backdrop: early Yuan dynasty Haihe river landing, simple temple-market beginning, river mist, wooden boats, packed earth, sparse stalls, no modern tourism street.
+Subject: a modest riverfront approach to Tianfei Palace, early shrine gate and simple timber structures, boatmen, merchants, incense visitors, cargo bundles, flags, rough wooden pier.
+Historical anchors: 1326 official decree of Tianfei Palace, river transport, Mazu/Tianfei worship, market not yet fully urbanized.
+Style: cinematic documentary realism, accurate period architecture, muted gray brick, dark wood, river fog, restrained warm lantern light, no fantasy, no modern signs, no skyscrapers, no clean theme-park look.
+Composition: wide horizontal scene, human scale, temple entrance visible but not monumental, river/boats present, enough foreground detail for hotspot exploration.

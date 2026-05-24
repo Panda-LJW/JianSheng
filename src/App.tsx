@@ -8,7 +8,7 @@ import { UploadPage } from './pages/UploadPage'
 type Page =
   | { kind: 'home'; focusArchive?: boolean }
   | { kind: 'upload' }
-  | { kind: 'analyzing'; userPhoto?: string; resultId: string }
+  | { kind: 'analyzing'; userPhoto?: string; resultId: string; source: 'upload' | 'example'; filename?: string }
   | { kind: 'detail'; locationId: string }
 
 function App() {
@@ -47,8 +47,8 @@ function App() {
       <UploadPage
         onBack={() => setPage({ kind: 'home' })}
         onBrowseLocations={() => setPage({ kind: 'home', focusArchive: true })}
-        onPhotoSelected={(userPhoto) => setPage({ kind: 'analyzing', userPhoto, resultId: 'jiefang' })}
-        onUseExample={() => setPage({ kind: 'analyzing', resultId: 'jiefang' })}
+        onPhotoSelected={(userPhoto, filename) => setPage({ kind: 'analyzing', userPhoto, filename, resultId: 'jinmen', source: 'upload' })}
+        onUseExample={() => setPage({ kind: 'analyzing', resultId: 'jinmen', source: 'example' })}
       />
     )
   }
@@ -59,6 +59,8 @@ function App() {
       <AnalyzingPage
         resultLocation={resultLocation}
         userPhoto={page.userPhoto}
+        source={page.source}
+        filename={page.filename}
         onBack={() => setPage({ kind: 'upload' })}
         onComplete={() => setPage({ kind: 'detail', locationId: page.resultId })}
       />
@@ -68,7 +70,13 @@ function App() {
   const activeLocation = page.kind === 'detail' ? getLocation(page.locationId) : undefined
 
   if (activeLocation) {
-    return <LocationDetail location={activeLocation} onBack={() => setPage({ kind: 'home', focusArchive: true })} />
+    return (
+      <LocationDetail
+        location={activeLocation}
+        onBack={() => setPage({ kind: 'home', focusArchive: true })}
+        onSelectLocation={(id) => setPage({ kind: 'detail', locationId: id })}
+      />
+    )
   }
 
   return (
