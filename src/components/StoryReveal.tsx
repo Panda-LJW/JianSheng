@@ -1,14 +1,22 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2, Pause, Play } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import type { LocationData } from '../data/locations'
+import { generateTtsAudio } from '../lib/api'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export function StoryReveal({ location }: { location: LocationData }) {
   const sectionRef = useRef<HTMLElement | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
   const [chapterState, setChapterState] = useState({ locationId: location.id, index: 0 })
+  const [tts, setTts] = useState<{
+    chapterId?: string
+    src?: string
+    status: 'idle' | 'loading' | 'ready' | 'playing' | 'error'
+    message?: string
+  }>({ status: 'idle' })
   const chapters = location.narration?.chapters ?? []
   const activeChapter = chapterState.locationId === location.id ? chapterState.index : 0
   const active = chapters[activeChapter]
@@ -39,6 +47,63 @@ export function StoryReveal({ location }: { location: LocationData }) {
     return () => ctx.revert()
   }, [])
 
+  useEffect(() => {
+    return () => {
+      setTts((current) => {
+        if (current.src) URL.revokeObjectURL(current.src)
+        return current
+      })
+    }
+  }, [])
+
+  function resetTtsForChapter() {
+    audioRef.current?.pause()
+    setTts((current) => {
+      if (current.src) URL.revokeObjectURL(current.src)
+      return { status: 'idle' }
+    })
+  }
+
+  function selectChapter(index: number) {
+    resetTtsForChapter()
+    setChapterState({ locationId: location.id, index })
+  }
+
+  async function handleTtsToggle() {
+    if (!active) return
+    const audio = audioRef.current
+    if (tts.status === 'playing' && audio) {
+      audio.pause()
+      setTts((current) => ({ ...current, status: 'ready' }))
+      return
+    }
+    if (tts.src && audio) {
+      await audio.play()
+      setTts((current) => ({ ...current, status: 'playing' }))
+      return
+    }
+
+    setTts({ status: 'loading', chapterId: active.id })
+    try {
+      const src = await generateTtsAudio({
+        text: `${active.title}。${active.body}${active.imageFocus ? ` 图像观察：${active.imageFocus}` : ''}${active.soundCue ? ` 声音线索：${active.soundCue}` : ''}`,
+        speed: 0.96,
+      })
+      setTts({ status: 'ready', chapterId: active.id, src })
+      window.setTimeout(() => {
+        if (!audioRef.current) return
+        void audioRef.current.play()
+        setTts((current) => ({ ...current, status: 'playing' }))
+      }, 0)
+    } catch (error) {
+      setTts({
+        status: 'error',
+        chapterId: active.id,
+        message: error instanceof Error ? error.message : 'TTS 暂时不可用',
+      })
+    }
+  }
+
   return (
     <section ref={sectionRef} className="story-section">
       <div className="story-shell">
@@ -58,7 +123,7 @@ export function StoryReveal({ location }: { location: LocationData }) {
                   type="button"
                   className={index === activeChapter ? 'is-active' : undefined}
                   aria-pressed={index === activeChapter}
-                  onClick={() => setChapterState({ locationId: location.id, index })}
+                  onClick={() => selectChapter(index)}
                 >
                   <span>{chapter.durationLabel}</span>
                   <strong>{chapter.title}</strong>
@@ -76,6 +141,21 @@ export function StoryReveal({ location }: { location: LocationData }) {
                 </div>
                 <h3>{active.title}</h3>
                 <p>{active.body}</p>
+                <div className="chapter-tts">
+                  <button type="button" onClick={handleTtsToggle} disabled={tts.status === 'loading'}>
+                    {tts.status === 'loading' ? <Loader2 aria-hidden="true" /> : tts.status === 'playing' ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
+                    <span>{tts.status === 'playing' ? '暂停旁白' : tts.status === 'loading' ? '生成旁白' : '播放本章旁白'}</span>
+                  </button>
+                  <span>{tts.status === 'error' ? tts.message : 'OpenAI TTS · 章节音频'}</span>
+                  {tts.src ? (
+                    <audio
+                      ref={audioRef}
+                      src={tts.src}
+                      onEnded={() => setTts((current) => ({ ...current, status: 'ready' }))}
+                      onPause={() => setTts((current) => current.status === 'playing' ? { ...current, status: 'ready' } : current)}
+                    />
+                  ) : null}
+                </div>
                 <div className="chapter-card__details">
                   {active.imageFocus ? (
                     <div>
@@ -94,7 +174,7 @@ export function StoryReveal({ location }: { location: LocationData }) {
               <div className="chapter-carousel__controls">
                 <button
                   type="button"
-                  onClick={() => setChapterState({ locationId: location.id, index: Math.max(0, activeChapter - 1) })}
+                  onClick={() => selectChapter(Math.max(0, activeChapter - 1))}
                   disabled={activeChapter === 0}
                 >
                   <ChevronLeft aria-hidden="true" />
@@ -107,7 +187,7 @@ export function StoryReveal({ location }: { location: LocationData }) {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setChapterState({ locationId: location.id, index: Math.min(chapters.length - 1, activeChapter + 1) })}
+                  onClick={() => selectChapter(Math.min(chapters.length - 1, activeChapter + 1))}
                   disabled={activeChapter === chapters.length - 1}
                 >
                   <span>下一章</span>
@@ -129,10 +209,7 @@ export function StoryReveal({ location }: { location: LocationData }) {
           <blockquote className="story-quote story-reveal">{location.story.highlightQuote}</blockquote>
         ) : null}
         <div className="soundscape story-reveal">
-          <div>
-            <p className="section-kicker">你 听 见 的</p>
-            <h3>声音环境</h3>
-          </div>
+          <p className="section-kicker">声音环境</p>
           <ul>
             {location.story.soundscape.map((sound) => (
               <li key={sound}>{sound}</li>

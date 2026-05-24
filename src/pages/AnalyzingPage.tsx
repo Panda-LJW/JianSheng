@@ -1,21 +1,25 @@
-import { ArrowLeft, Check, Circle, FileJson, Loader2 } from 'lucide-react'
+import { ArrowLeft, Check, Circle, FileJson, Loader2, Server } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import type { LocationData } from '../data/locations'
+import { createExperienceJob, getExperienceJob, type ExperienceJob } from '../lib/api'
 
 interface AnalyzingPageProps {
   resultLocation?: LocationData
   userPhoto?: string
+  source: 'upload' | 'example'
+  filename?: string
   onBack: () => void
   onComplete: () => void
 }
 
 const steps = [
-  { text: '读取本地照片预览', detail: '不上传到实时服务器', duration: 700 },
-  { text: '匹配静态示例地标', detail: '默认命中解放桥 demo', duration: 1000 },
-  { text: '载入 workflow analysis', detail: '读取离线 JSON 契约字段', duration: 1200 },
-  { text: '确认历史复原图', detail: '使用已生成 restored image', duration: 1100 },
-  { text: '准备音频与章节', detail: '绑定本地 BGM 与 narration', duration: 900 },
-  { text: '进入可评审体验', detail: '前端 ready，不假装实时生成', duration: 900 },
+  { text: '创建体验任务', detail: '连接本地 job 状态模型', duration: 700 },
+  { text: '识别地点线索', detail: '默认匹配解放桥示例结果', duration: 1000 },
+  { text: '检索历史资料', detail: 'Web Search 可增强资料依据', duration: 1100 },
+  { text: '准备历史复原图', detail: '载入 workflow restored image', duration: 1100 },
+  { text: '生成章节旁白', detail: 'TTS 接口可生成分段音频', duration: 900 },
+  { text: '检查 3D 场景', detail: '读取 Marble world manifest', duration: 900 },
+  { text: '进入体验结果', detail: '前端与后端契约已对齐', duration: 700 },
 ]
 
 const totalDuration = steps.reduce((sum, step) => sum + step.duration, 0)
@@ -35,11 +39,69 @@ function typedText(text: string, elapsedInStep: number, duration: number) {
   return text.slice(0, visibleCount)
 }
 
-export function AnalyzingPage({ resultLocation, userPhoto, onBack, onComplete }: AnalyzingPageProps) {
+function getStepIndexFromJob(job?: ExperienceJob | null) {
+  if (!job) return -1
+  return Math.max(0, job.steps.findLastIndex((step) => step.completed))
+}
+
+export function AnalyzingPage({
+  resultLocation,
+  userPhoto,
+  source,
+  filename,
+  onBack,
+  onComplete,
+}: AnalyzingPageProps) {
   const [elapsed, setElapsed] = useState(0)
   const [finished, setFinished] = useState(false)
+  const [job, setJob] = useState<ExperienceJob | null>(null)
+  const [apiMode, setApiMode] = useState<'connecting' | 'connected' | 'fallback'>('connecting')
 
   useEffect(() => {
+    let cancelled = false
+    let timer = 0
+
+    async function startJob() {
+      try {
+        const created = await createExperienceJob({
+          resultId: resultLocation?.id ?? 'jiefang',
+          source,
+          filename,
+        })
+        if (cancelled) return
+        setJob(created)
+        setApiMode('connected')
+
+        const poll = async () => {
+          try {
+            const next = await getExperienceJob(created.id)
+            if (cancelled) return
+            setJob(next)
+            if (next.status === 'completed') {
+              setFinished(true)
+              window.setTimeout(onComplete, 520)
+              return
+            }
+            timer = window.setTimeout(poll, 560)
+          } catch {
+            if (!cancelled) setApiMode('fallback')
+          }
+        }
+        timer = window.setTimeout(poll, 460)
+      } catch {
+        if (!cancelled) setApiMode('fallback')
+      }
+    }
+
+    void startJob()
+    return () => {
+      cancelled = true
+      window.clearTimeout(timer)
+    }
+  }, [filename, onComplete, resultLocation?.id, source])
+
+  useEffect(() => {
+    if (apiMode === 'connected') return undefined
     const startedAt = performance.now()
     let frame = 0
 
@@ -56,18 +118,21 @@ export function AnalyzingPage({ resultLocation, userPhoto, onBack, onComplete }:
 
     frame = window.requestAnimationFrame(tick)
     return () => window.cancelAnimationFrame(frame)
-  }, [onComplete])
+  }, [apiMode, onComplete])
 
-  const activeStep = getActiveStep(elapsed)
-  const completedCount = Math.min(activeStep, steps.length)
+  const fallbackStep = getActiveStep(elapsed)
+  const jobStep = getStepIndexFromJob(job)
+  const activeStep = apiMode === 'connected' && job ? Math.min(steps.length - 1, jobStep) : fallbackStep
+  const completedCount = apiMode === 'connected' && job ? Math.min(jobStep + 1, steps.length) : Math.min(activeStep, steps.length)
   const elapsedBeforeActive = steps.slice(0, activeStep).reduce((sum, step) => sum + step.duration, 0)
   const activeStepElapsed = Math.max(0, elapsed - elapsedBeforeActive)
-  const progress = Math.min(1, elapsed / totalDuration)
+  const progress = apiMode === 'connected' && job ? job.progress : Math.min(1, elapsed / totalDuration)
   const currentText = useMemo(() => {
     if (finished) return '示例结果已准备完毕'
+    if (apiMode === 'connected' && job) return job.label
     const current = steps[activeStep] ?? steps[steps.length - 1]
     return typedText(`正在${current.text}...`, activeStepElapsed, current.duration)
-  }, [activeStep, activeStepElapsed, finished])
+  }, [activeStep, activeStepElapsed, apiMode, finished, job])
 
   return (
     <main className="app-frame analyzing-page">
@@ -77,9 +142,9 @@ export function AnalyzingPage({ resultLocation, userPhoto, onBack, onComplete }:
       </button>
       <section className="analyzing-page__shell">
         <div className="analysis-heading">
-          <p className="section-kicker">offline workflow demo</p>
-          <h1>载入已生成结果</h1>
-          <p>这里展示的是离线 AI workflow 的前端契约演示，不会把照片发送到实时后端。</p>
+          <p className="section-kicker">ai workflow job</p>
+          <h1>生成体验任务</h1>
+          <p>正在把照片入口、资料检索、复原图、TTS 与 Marble 场景整理成一次可播放的文旅体验。</p>
         </div>
 
         <div className="analysis-photo">
@@ -113,10 +178,10 @@ export function AnalyzingPage({ resultLocation, userPhoto, onBack, onComplete }:
         </ol>
 
         <aside className="pipeline-card" aria-label="workflow契约状态">
-          <FileJson aria-hidden="true" />
+          {apiMode === 'connected' ? <Server aria-hidden="true" /> : <FileJson aria-hidden="true" />}
           <div>
-            <strong>{resultLocation?.name ?? '解放桥'} · 契约就绪</strong>
-            <span>{resultLocation?.pipeline?.analysisPath ?? 'workflow/output/demo-analyses.json'}</span>
+            <strong>{resultLocation?.name ?? '解放桥'} · {apiMode === 'connected' ? '本地 API 已连接' : '本地体验流程'}</strong>
+            <span>{job?.id ?? resultLocation?.pipeline?.analysisPath ?? 'workflow/output/demo-analyses.json'}</span>
           </div>
         </aside>
       </section>

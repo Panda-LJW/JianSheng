@@ -1,0 +1,9 @@
+Use case: historical-scene
+Asset type: JianSheng timeline image, 1536x1024 photoreal historical reconstruction
+Primary request: Reconstruct Tianjin Tianhou Palace / Tianfei Palace around 1326 at the moment of official Yuan dynasty decree, with historically cautious spatial layout.
+Scene/backdrop: early Yuan dynasty Haijin town near the Sanchakou river transport zone, but the temple gate is NOT directly on the river edge. Show an earthen temple-front approach, sparse market path, incense visitors, simple timber sheds, and a distant side/background hint of water transport.
+Subject: modest Tianfei Palace gate facing east, gray brick, dark timber beams, plain tiled roof, two simple banner poles, incense table, boatmen and merchants arriving from a road/path that implies the nearby wharf. The river, boats, and landing area must be far behind or off to one side, partially obscured by mist and buildings; do not place open water immediately beside the gate.
+Historical anchors: 1326 official decree of Tianfei Palace, Mazu/Tianfei worship for boatmen and merchants, early market formation before the dense Gongnan/Gongbei commercial streets.
+Style: cinematic documentary realism, restrained Yuan dynasty architecture, muted earth and gray brick palette, no fantasy, no modern signs, no tourist street polish, no exaggerated palace scale.
+Composition: wide horizontal view from temple-front ground level, temple gate centered as civic/religious anchor, foreground is dry packed earth and foot traffic, river transport only as contextual background rather than adjacent waterfront.
+Negative constraints: no river directly touching the gate, no boats moored beside the temple steps, no waterfront promenade, no modern city, no Qing/Ming overly ornate decoration, no theme-park look.

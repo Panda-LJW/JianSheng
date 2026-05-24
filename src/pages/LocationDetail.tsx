@@ -1,10 +1,10 @@
 import { useRef } from 'react'
-import { HeroPast } from '../components/HeroPast'
-import { HeroPresent } from '../components/HeroPresent'
 import { MarbleVideo } from '../components/MarbleVideo'
+import { MarbleWorldEntry } from '../components/MarbleWorldEntry'
 import { MusicToggle } from '../components/MusicToggle'
 import { StoryReveal } from '../components/StoryReveal'
 import { TimeTransition } from '../components/TimeTransition'
+import { TimelineExplorer } from '../components/TimelineExplorer'
 import type { LocationData } from '../data/locations'
 import { useBgmPlayer } from '../hooks/useBgmPlayer'
 import { useScrollProgress } from '../hooks/useScrollProgress'
@@ -12,9 +12,10 @@ import { useScrollProgress } from '../hooks/useScrollProgress'
 interface Props {
   location: LocationData
   onBack: () => void
+  onSelectLocation: (id: string) => void
 }
 
-export function LocationDetail({ location, onBack }: Props) {
+export function LocationDetail({ location, onBack, onSelectLocation }: Props) {
   const transitionRef = useRef<HTMLElement | null>(null)
   const progress = useScrollProgress(transitionRef)
   const bgm = useBgmPlayer(location.bgmAudio, progress)
@@ -22,11 +23,11 @@ export function LocationDetail({ location, onBack }: Props) {
   return (
     <main className="app-frame detail-page">
       <MusicToggle muted={bgm.muted} ready={bgm.ready} progress={progress} onToggle={bgm.toggleMuted} />
-      <HeroPresent location={location} onBack={onBack} />
       <section ref={transitionRef} className="transition-anchor">
-        <TimeTransition location={location} progress={progress} />
+        <TimeTransition location={location} progress={progress} bgm={bgm} onBack={onBack} />
       </section>
-      <HeroPast location={location} bgm={bgm} progress={progress} />
+      <TimelineExplorer location={location} onSelectLocation={onSelectLocation} />
+      <MarbleWorldEntry location={location} />
       <MarbleVideo src={location.marbleVideo} />
       <StoryReveal location={location} />
 

@@ -1,0 +1,8 @@
+Use case: historical-scene
+Asset type: JianSheng timeline image, 1536x1024 photoreal historical reconstruction
+Primary request: Reconstruct Tianjin Tianhou Palace gate during a prosperous Qing dynasty temple fair period, when incense, opera stage, guild processions, and palace-front markets were active.
+Scene/backdrop: Tianhou Palace facing the Haihe area, temple gate, opera stage or fair activity nearby, banner poles, incense smoke, crowded but navigable temple-front market.
+Subject: gray brick gate, red wood doors, painted beams, flagpoles with red lights/banners, worshippers, boatmen, vendors, opera musicians, ritual drums, paper offerings, river trade atmosphere.
+Historical anchors: Tianhou Palace as Mazu/Tianhou worship center, temple fairs, Tianjin Huanghui folk ritual, palace-front market feeding Gongnan/Gongbei streets.
+Style: cinematic historical realism, Qing dynasty clothing and street life, smoke through warm daylight, muted brick and wood, festive red/yellow accents without theme-park exaggeration.
+Composition: wide horizontal view framed by the gate, human activity and ritual objects visible, river commerce implied in background.
